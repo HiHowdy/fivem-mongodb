@@ -1,5 +1,3 @@
-
-console.log('here');
 const { MongoClient } = require('mongodb');
 
 const url = GetConvar('mongo_url', 'unset');
@@ -11,8 +9,6 @@ let db = false;
  * @returns A promise that resolves to a string.
  */
 async function init() {
-    console.log('init');
-
     if (url === 'unset' || dbName === 'unset')
         return '[MongoDB]: Unable to establish connection. (Missing database URL or database name)';
 
