@@ -23,8 +23,8 @@ init().then(console.log).catch(console.error);
 /**
  * If the database is ready, return true, otherwise return false.
  */
-const checkDatabaseReady = () => (db ? true : false);
-exports('checkDatabaseReady', checkDatabaseReady);
+const hasConnection = () => (db ? true : false);
+exports('hasConnection', hasConnection);
 
 /**
  * It counts the number of documents in a collection that match the given parameters
