@@ -1,5 +1,5 @@
 # Fivem-MongoDB
-FiveM-MongoDB is a MongoDB wrapper for us within FiveM. For full documentation of MongoDB see [here](https://www.mongodb.com/docs/drivers/node/current/). All compatible operations are listed below. All functions are designed to be used for JavaScript however a patch will be coming shortly for LUA. 
+FiveM-MongoDB is a MongoDB wrapper for use within FiveM. For full documentation of MongoDB see [here](https://www.mongodb.com/docs/drivers/node/current/). All compatible operations are listed below. All functions are designed to be used for JavaScript however a patch will be coming shortly for LUA. 
 
 This will be updated to include more operations in future.
 
