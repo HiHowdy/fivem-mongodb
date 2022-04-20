@@ -1,0 +1,10 @@
+{
+    "name": "mongodb-wrapper",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "dependencies": {
+        "@citizenfx/server": "^2.0.5503-1",
+        "mongodb": "^4.5.0"
+    }
+}
