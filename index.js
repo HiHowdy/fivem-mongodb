@@ -19,12 +19,14 @@ async function init() {
 }
 
 init().then(console.log).catch(console.error);
+let MongoDB = {};
 
 /**
  * If the database is ready, return true, otherwise return false.
  */
 const hasConnection = () => (db ? true : false);
 exports('hasConnection', hasConnection);
+MongoDB.hasConnection = hasConnection;
 
 /**
  * Finds documents in a collection based on the parameters passed in
@@ -55,6 +57,7 @@ const find = async (collection, params) => {
     );
 };
 exports('find', find);
+MongoDB.find = find;
 
 /**
  * It counts the number of documents in a collection that match the given parameters
@@ -70,6 +73,7 @@ const countDocuments = async (collection, params) => {
     return await dbCollection.count(...params);
 };
 exports('countDocuments', countDocuments);
+MongoDB.countDocuments = countDocuments;
 
 /**
  * Delete one document from the database
@@ -92,6 +96,7 @@ const deleteOne = async (collection, params) => {
     return await dbCollection.deleteOne(params);
 };
 exports('deleteOne', deleteOne);
+MongoDB.deleteOne = deleteOne;
 
 /**
  * Delete many documents from a collection
@@ -114,6 +119,7 @@ const deleteMany = async (collection, params) => {
     return await dbCollection.deleteMany(params);
 };
 exports('deleteMany', deleteMany);
+MongoDB.deleteMany = deleteMany;
 
 /**
  * Inserts one document into a collection
@@ -136,6 +142,7 @@ const insertOne = async (collection, params) => {
     return await dbCollection.insertOne(params);
 };
 exports('insertOne', insertOne);
+MongoDB.insertOne = insertOne;
 
 /**
  * Inserts many documents into a collection
@@ -158,23 +165,7 @@ const insertMany = async (collection, params) => {
     return await dbCollection.insertMany(params);
 };
 exports('insertMany', insertMany);
-
-/**
- * It returns a promise that resolves to an array of all the documents in the collection
- * @param collection - The name of the collection you want to query.
- * @returns An array of all the documents in the collection.
- * @example findAll('people')
- */
-const findAll = async (collection) => {
-    if (!hasConnection) return false;
-
-    const dbCollection = db.collection(collection);
-    return await dbCollection
-        .find({})
-        .toArray()
-        .catch((err) => console.error(err.message));
-};
-exports('findAll', findAll);
+MongoDB.insertMany = insertMany;
 
 /**
  * It takes a collection name and an array of parameters, and returns the result
@@ -196,6 +187,7 @@ const updateOne = async (collection, params) => {
     return await dbCollection.updateOne(...params);
 };
 exports('updateOne', updateOne);
+MongoDB.updateOne = updateOne;
 
 const validateDocuments = (data) => {
     if (!Array.isArray(data)) return data;
@@ -206,5 +198,5 @@ const validateDocuments = (data) => {
     });
 };
 
-
 module.exports = db;
+exports('Load', () => MongoDB);
