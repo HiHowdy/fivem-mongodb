@@ -27,6 +27,36 @@ const hasConnection = () => (db ? true : false);
 exports('hasConnection', hasConnection);
 
 /**
+ * Finds documents in a collection based on the parameters passed in
+ * @param collection - The name of the collection you want to find documents from.
+ * @param params - An array of parameters to pass to the find method.
+ * @returns An array of documents that match the params
+ * @example find('people', [{name: 'john', birthyear: {$gt: 1980}}])
+ */
+const find = async (collection, params) => {
+    if (!hasConnection) return false;
+
+    if (typeof params === 'object') params = [...params];
+
+    if (!params) {
+        console.error(
+            `Invalid or no params used on find. Collection: ${collection}. If you want to find all documents use findAll()`
+        );
+        return false;
+    }
+
+    const dbCollection = db.collection(collection);
+
+    return validateDocuments(
+        await dbCollection
+            .find(...params)
+            .toArray()
+            .catch((err) => console.error(err.message))
+    );
+};
+exports('find', find);
+
+/**
  * It counts the number of documents in a collection that match the given parameters
  * @param collection - The name of the collection you want to query.
  * @param params - An object that specifies the query criteria.
@@ -130,31 +160,6 @@ const insertMany = async (collection, params) => {
 exports('insertMany', insertMany);
 
 /**
- * Finds documents in a collection based on the parameters passed in
- * @param collection - The name of the collection you want to find documents from.
- * @param params - An array of parameters to pass to the find method.
- * @returns An array of documents that match the params
- * @example find('people', [{name: 'john', birthyear: {$gt: 1980}}])
- */
-const find = async (collection, params) => {
-    if (!hasConnection) return false;
-
-    if (!params) {
-        console.error(
-            `Invalid or no params used on find. Collection: ${collection}. If you want to find all documents use findAll()`
-        );
-        return false;
-    }
-
-    const dbCollection = db.collection(collection);
-    return await dbCollection
-        .find(...params)
-        .toArray()
-        .catch((err) => console.error(err.message));
-};
-exports('find', find);
-
-/**
  * It returns a promise that resolves to an array of all the documents in the collection
  * @param collection - The name of the collection you want to query.
  * @returns An array of all the documents in the collection.
@@ -191,5 +196,15 @@ const updateOne = async (collection, params) => {
     return await dbCollection.updateOne(...params);
 };
 exports('updateOne', updateOne);
+
+const validateDocuments = (data) => {
+    if (!Array.isArray(data)) return data;
+
+    return data.map((d) => {
+        if (d._id && typeof d._id !== 'string') d._id = d._id.toString();
+        return d;
+    });
+};
+
 
 module.exports = db;
