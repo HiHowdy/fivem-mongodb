@@ -18,7 +18,17 @@ async function init() {
     return `[MongoDB]: Connection established (${dbName})`;
 }
 
-init().then(console.log).catch(console.error);
+init().then(console.log).catch(console.error)
+// .finally(async () => {
+//     // insertMany('people', [{name: 'john', birthyear: 2003}, {name: 'doe', birthyear: 2003}])
+//     const inserts = [];
+
+//     for (i = 0; i < 500000; i++) {
+//         inserts.push({itemId: 'water', slot: 1, date: Date.now(), data: [], inventory: `${Math.random()}`});
+//     }
+
+//     await insertMany('inventory', inserts);
+// });
 let MongoDB = {};
 
 /**
@@ -58,6 +68,45 @@ const find = async (collection, params) => {
 };
 exports('find', find);
 MongoDB.find = find;
+
+/**
+ * Find all documents in a collection that match the given parameters and update them with the given
+ * update parameters
+ * @param collection - The collection you want to find and update.
+ * @param params - The parameters to find the documents.
+ * @param updateParams - The parameters you want to update.
+ * @param limit - The number of documents to find and update.
+ * @returns The return value is the result of the updateMany() method.
+ * @example findAndUpdate('people', [{name: 'john', deleted: false}], {deleted: true}, 50)
+ */
+const findAndUpdate = async (collection, params, updateParams, limit) => {
+    if (!hasConnection) return false;
+    if (typeof params === 'object') params = [...params];
+
+    if (!params) {
+        console.error(
+            `Invalid or no params used on find. Collection: ${collection}. If you want to find all documents use findAll()`
+        );
+        return false;
+    }
+
+    const ids = [];
+
+    const dbCollection = db.collection(collection);
+    await dbCollection
+        .find(...params)
+        .limit(limit)
+        .forEach((e) => {
+            ids.push(e._id);
+        });
+
+    return await dbCollection.updateMany(
+        { _id: { $in: ids } },
+        { $set: updateParams }
+    );
+};
+exports('findAndUpdate', findAndUpdate);
+MongoDB.findAndUpdate = findAndUpdate
 
 /**
  * It counts the number of documents in a collection that match the given parameters
