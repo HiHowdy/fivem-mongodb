@@ -18,17 +18,13 @@ async function init() {
     return `[MongoDB]: Connection established (${dbName})`;
 }
 
-init().then(console.log).catch(console.error)
-// .finally(async () => {
-//     // insertMany('people', [{name: 'john', birthyear: 2003}, {name: 'doe', birthyear: 2003}])
-//     const inserts = [];
-
-//     for (i = 0; i < 500000; i++) {
-//         inserts.push({itemId: 'water', slot: 1, date: Date.now(), data: [], inventory: `${Math.random()}`});
-//     }
-
-//     await insertMany('inventory', inserts);
-// });
+init()
+    .then(console.log)
+    .catch(console.error)
+    .finally(() => {
+        emit('onDatabaseIsReady');
+    });
+    
 let MongoDB = {};
 
 /**
@@ -106,7 +102,7 @@ const findAndUpdate = async (collection, params, updateParams, limit) => {
     );
 };
 exports('findAndUpdate', findAndUpdate);
-MongoDB.findAndUpdate = findAndUpdate
+MongoDB.findAndUpdate = findAndUpdate;
 
 /**
  * It counts the number of documents in a collection that match the given parameters
@@ -182,7 +178,7 @@ const insertOne = async (collection, params) => {
 
     if (!params) {
         console.error(
-            `Invalid or no params used on insertOne. Collection: ${collection}. Example: findOne('collection', {_id: 1})`
+            `Invalid or no params used on insertOne. Collection: ${collection}. Example: insertOne('collection', {_id: 1})`
         );
         return false;
     }
